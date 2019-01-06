@@ -2,6 +2,7 @@ import axios, {AxiosError, AxiosResponse } from 'axios';
 import { Request, Response } from 'express';
 
 import * as PfortNiteApi from '../config/fortnite-api';
+import fortniteModel from '../models/fortniteModel';
 import { IGetUserId, IGetUserStats } from '../types/fortnite-types';
 
 export let index = (req: Request, res: Response) => {
