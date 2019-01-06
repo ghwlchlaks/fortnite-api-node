@@ -34,6 +34,7 @@ app.put('/board', boardController.addContent);
 app.delete('/board/:id', boardController.deleteContent);
 
 /* fortNiteApi routes */
-app.get('/api/fortnite?', fortNiteApiController.getUserId);
+app.get('/api/fortnite/users?', fortNiteApiController.getUserId);
+app.get('/api/fortnite/status?', fortNiteApiController.getUserStats);
 
 app.listen(3000, () => console.log('app listening on port 3000!'));
