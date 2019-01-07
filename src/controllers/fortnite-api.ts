@@ -66,19 +66,20 @@ const callGetUserStatsApi = async (id: string, plat: string): Promise<IGetUserSt
 export let getUserStats = (req: Request, res: Response) => {
     const userId: string = req.query.userId;
     const platform: string = req.query.platform;
-    console.log(userId);
-    const main = async () => {
+
+    const main = async (): Promise<IUserStatsModel> => {
 
         // id 검사
-        const checkId = await fortniteModel.findOne({username: {$regex: userId, $options: 'i'}});
+        const checkId: IUserStatsModel = await fortniteModel.findOne({username: {$regex: userId, $options: 'i'}});
         console.log(checkId);
-        let userIdApiData;
-        let userStatsApiData;
+        let userIdApiData: IGetUserId;
+        let userStatsApiData: IGetUserStats;
 
         if (checkId) {
             // id 존재 할 떄
             // 3분
-            const checkTime = await fortniteModel.findOne({lastupdate : {$lte: (Date.now() - ( 1 * 60 * 1000 ))}});
+            const checkTime: IGetUserStats =
+                await fortniteModel.findOne({lastupdate : {$lte: (Date.now() - ( 1 * 60 * 1000 ))}});
             console.log('2');
             if (!checkTime) {
                 // 시간안에 요청시
@@ -109,7 +110,7 @@ export let getUserStats = (req: Request, res: Response) => {
         }
     };
 
-    main().then((result: any) => {
+    main().then((result: IUserStatsModel) => {
         if (result) {
             res.send(result);
         } else {
@@ -127,7 +128,7 @@ const updateStats = (userIdApiData: IGetUserId , userStatsApiData: IGetUserStats
     return fortniteModel.findOneAndUpdate({uid : userIdApiData.uid}, {$set : mergeData});
 };
 
-const createStats = (userIdApiData: IGetUserId , userStatsApiData: IGetUserStats) => {
+const createStats = (userIdApiData: IGetUserId , userStatsApiData: IGetUserStats): Promise<IUserStatsModel> => {
     console.log('12');
     const mergeData = Object.assign(userIdApiData, userStatsApiData);
     console.log('13');
