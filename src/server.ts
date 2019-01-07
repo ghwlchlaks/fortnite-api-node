@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 
 import * as boardController from './controllers/board';
@@ -23,7 +23,13 @@ mongoose.connect(mongoUrl, {useNewUrlParser: true ,  useFindAndModify: false }, 
 
 app.use(bodyParser.json());
 app.use(cors());
-
+app.use('*', (req: Request, res: Response, next: NextFunction) => {
+    const ip = req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress;
+    console.log(ip);
+    next();
+});
 /* index routes */
 app.get('/', indexController.index);
 
