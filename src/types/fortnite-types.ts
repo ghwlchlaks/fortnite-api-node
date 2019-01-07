@@ -1,3 +1,4 @@
+
 export interface IGetUserId {
     uid: string;
     username: string;
@@ -64,3 +65,5 @@ interface Itotal {
     kd: number;
     lastupdate: Date;
 }
+
+// export interface IUserStats extends IGetUserId, IGetUserStats, Document {}

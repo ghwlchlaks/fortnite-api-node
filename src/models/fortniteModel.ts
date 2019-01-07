@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import * as fortniteTypes from '../types/fortnite-types';
 
 export const userStatsSchema = new mongoose.Schema({
     platforms: {type: Array},
@@ -56,5 +57,10 @@ export const userStatsSchema = new mongoose.Schema({
     lastupdate: {type: Date, required: true, default: Date.now},
 });
 
-const userStats = mongoose.model('userStats', userStatsSchema);
+export interface IUserStatsModel extends fortniteTypes.IGetUserId, fortniteTypes.IGetUserStats, mongoose.Document {
+    lastupdate: Date;
+}
+
+export const userStats: mongoose.Model<IUserStatsModel> = mongoose.model<IUserStatsModel>('userStats', userStatsSchema);
+// const userStats = mongoose.model('userStats', userStatsSchema);
 export default userStats;
