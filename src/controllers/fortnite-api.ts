@@ -124,7 +124,7 @@ const updateStats = (userIdApiData: IGetUserId , userStatsApiData: IGetUserStats
     console.log('10');
     const mergeData = Object.assign(userIdApiData, userStatsApiData, currentTime);
     console.log('11');
-    return fortniteModel.updateOne({uid : userIdApiData.uid}, {$set : mergeData});
+    return fortniteModel.findOneAndUpdate({uid : userIdApiData.uid}, {$set : mergeData});
 };
 
 const createStats = (userIdApiData: IGetUserId , userStatsApiData: IGetUserStats) => {

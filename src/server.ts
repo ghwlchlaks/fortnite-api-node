@@ -13,7 +13,7 @@ const app = express();
 
 /* mongodb connect */
 const mongoUrl = mongoDBConfig.URL;
-mongoose.connect(mongoUrl, {useNewUrlParser: true}, (err: any) => {
+mongoose.connect(mongoUrl, {useNewUrlParser: true ,  useFindAndModify: false }, (err: any) => {
     if (err) {
         console.log(err.message);
     } else {
