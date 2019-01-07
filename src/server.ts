@@ -3,7 +3,6 @@ import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 
-import * as boardController from './controllers/board';
 import * as fortNiteApiController from './controllers/fortnite-api';
 import * as indexController from './controllers/index';
 
@@ -32,12 +31,6 @@ app.use('*', (req: Request, res: Response, next: NextFunction) => {
 });
 /* index routes */
 app.get('/', indexController.index);
-
-/* board routes */
-app.get('/boards', boardController.getAllBoard);
-app.get('/board/:id', boardController.getContent);
-app.put('/board', boardController.addContent);
-app.delete('/board/:id', boardController.deleteContent);
 
 /* fortNiteApi routes */
 app.get('/api/fortnite/users?', fortNiteApiController.getUserId);
