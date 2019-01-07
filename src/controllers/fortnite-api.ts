@@ -83,37 +83,29 @@ export let getUserStats = (req: Request, res: Response) => {
             // 1분
             const checkTime: IGetUserStats =
                 await fortniteModel.findOne({lastupdate : {$lte: (Date.now() - ( 1 * 60 * 1000 ))}});
-            console.log('2');
             if (!checkTime) {
                 // 시간안에 요청시
                 // db값 주기
-                console.log('3');
                 return checkId;
             } else {
                 // 시간 밖에 요청시
                 // api 이용
-                console.log('4');
                 userIdApiData = await callGetUserIdApi(userId);
-                console.log('5');
                 userStatsApiData = await callGetUserStatsApi(userIdApiData.uid, platform);
                 // db 갱신 및 현재시간 저장
-                console.log('6');
                 return updateStats(userIdApiData, userStatsApiData);
             }
         } else {
             // id 존재 안 할 때
             // api 이용
-            console.log('7');
             // 찾고자하는 유저가 없을떄 null 반환
             userIdApiData = await callGetUserIdApi(userId);
-            console.log(userIdApiData);
+            // console.log(userIdApiData);
             if (!userIdApiData) {
-                console.log('etete');
                 return;
             }
             userStatsApiData = await callGetUserStatsApi(userIdApiData.uid, platform);
             // db 생성
-            console.log('9');
             return createStats(userIdApiData, userStatsApiData);
         }
     };
@@ -130,16 +122,12 @@ export let getUserStats = (req: Request, res: Response) => {
 };
 const updateStats = (userIdApiData: IGetUserId , userStatsApiData: IGetUserStats) => {
     const currentTime = { lastupdate : Date.now()};
-    console.log('10');
     const mergeData = Object.assign(userIdApiData, userStatsApiData, currentTime);
-    console.log('11');
     return fortniteModel.findOneAndUpdate({uid : userIdApiData.uid}, {$set : mergeData});
 };
 
 const createStats = (userIdApiData: IGetUserId , userStatsApiData: IGetUserStats): Promise<IUserStatsModel> => {
-    console.log('12');
     const mergeData = Object.assign(userIdApiData, userStatsApiData);
-    console.log('13');
     const fortnite = new fortniteModel(mergeData);
     return fortnite.save();
 };
