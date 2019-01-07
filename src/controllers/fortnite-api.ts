@@ -33,7 +33,11 @@ const callGetUserIdApi = async (userId: string): Promise<IGetUserId>  => {
     }).then((response: AxiosResponse) => {
         result = response.data;
         if (response.data && response.status >= 200 && response.status < 300) {
-            return result;
+            if (response.data.error) {
+                return null;
+            } else {
+                return result;
+            }
         } else {
             return null;
         }
@@ -69,15 +73,14 @@ export let getUserStats = (req: Request, res: Response) => {
 
     const main = async (): Promise<IUserStatsModel> => {
 
-        // id 검사
+        // id 검사 대소문자 구별x
         const checkId: IUserStatsModel = await fortniteModel.findOne({username: {$regex: userId, $options: 'i'}});
-        console.log(checkId);
         let userIdApiData: IGetUserId;
         let userStatsApiData: IGetUserStats;
 
         if (checkId) {
             // id 존재 할 떄
-            // 3분
+            // 1분
             const checkTime: IGetUserStats =
                 await fortniteModel.findOne({lastupdate : {$lte: (Date.now() - ( 1 * 60 * 1000 ))}});
             console.log('2');
@@ -101,8 +104,13 @@ export let getUserStats = (req: Request, res: Response) => {
             // id 존재 안 할 때
             // api 이용
             console.log('7');
+            // 찾고자하는 유저가 없을떄 null 반환
             userIdApiData = await callGetUserIdApi(userId);
-            console.log('8');
+            console.log(userIdApiData);
+            if (!userIdApiData) {
+                console.log('etete');
+                return;
+            }
             userStatsApiData = await callGetUserStatsApi(userIdApiData.uid, platform);
             // db 생성
             console.log('9');
@@ -112,9 +120,9 @@ export let getUserStats = (req: Request, res: Response) => {
 
     main().then((result: IUserStatsModel) => {
         if (result) {
-            res.send(result);
+            res.send({status: true, value: result});
         } else {
-            res.send(null);
+            res.send({status: false, msg: 'no user!'});
         }
     }).catch((err) => {
         console.error(err);
