@@ -62,5 +62,4 @@ export interface IUserStatsModel extends fortniteTypes.IGetUserId, fortniteTypes
 }
 
 export const userStats: mongoose.Model<IUserStatsModel> = mongoose.model<IUserStatsModel>('userStats', userStatsSchema);
-// const userStats = mongoose.model('userStats', userStatsSchema);
 export default userStats;

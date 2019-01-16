@@ -74,8 +74,10 @@ const callGetUserStatsApi = async (id: string, plat: string): Promise<IGetUserSt
 
 export let getUserStats = (req: Request, res: Response) => {
     const userId: string = req.query.userId;
-    const platform: string = req.query.platform;
-
+    let platform: string = req.query.platform;
+    if (platform === 'XBOX') {
+        platform = 'XB1';
+    }
     const main = async (): Promise<IUserStatsModel> => {
 
         // id 검사 대소문자 구별x
@@ -111,7 +113,6 @@ export let getUserStats = (req: Request, res: Response) => {
             // api 이용
             // 찾고자하는 유저가 없을떄 null 반환
             userIdApiData = await callGetUserIdApi(userId);
-            // console.log(userIdApiData);
             if (!userIdApiData) {
                 return;
             }
