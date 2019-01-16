@@ -5,6 +5,14 @@ export interface IGetUserId {
     platforms: [IPlatform];
     seasons: [ISeason];
 }
+// export interface StatusError {
+//     error: boolean;
+//     errorCode: string;
+//     errorMessage: string;
+//     numericErrorCode: string;
+//     originatingService: string;
+//     intent: string;
+// }
 interface IPlatform {
     name: string;
 }

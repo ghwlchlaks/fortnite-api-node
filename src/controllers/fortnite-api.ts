@@ -57,8 +57,13 @@ const callGetUserStatsApi = async (id: string, plat: string): Promise<IGetUserSt
     }).then((response: AxiosResponse) => {
         if (response.data && response.status >= 200 && response.status < 300) {
             result = response.data;
-            return result;
+            if (response.data.error) {
+                return null;
+            } else {
+                return result;
+            }
         } else {
+            console.log('error');
             return null;
         }
     }).catch((error: AxiosError) => {
@@ -74,7 +79,12 @@ export let getUserStats = (req: Request, res: Response) => {
     const main = async (): Promise<IUserStatsModel> => {
 
         // id 검사 대소문자 구별x
-        const checkId: IUserStatsModel = await fortniteModel.findOne({username: {$regex: userId, $options: 'i'}});
+        const checkId: IUserStatsModel = await fortniteModel.findOne({
+            username: {$regex: userId, $options: 'i'},
+        }).findOne({
+            platform: {$regex: platform, $options: 'i'},
+        });
+        console.log(checkId);
         let userIdApiData: IGetUserId;
         let userStatsApiData: IGetUserStats;
 
@@ -83,6 +93,7 @@ export let getUserStats = (req: Request, res: Response) => {
             // 1분
             const checkTime: IGetUserStats =
                 await fortniteModel.findOne({lastupdate : {$lte: (Date.now() - ( 1 * 60 * 1000 ))}});
+            console.log(checkTime);
             if (!checkTime) {
                 // 시간안에 요청시
                 // db값 주기
@@ -106,6 +117,9 @@ export let getUserStats = (req: Request, res: Response) => {
             }
             userStatsApiData = await callGetUserStatsApi(userIdApiData.uid, platform);
             // db 생성
+            if (!userStatsApiData) {
+                return;
+            }
             return createStats(userIdApiData, userStatsApiData);
         }
     };
